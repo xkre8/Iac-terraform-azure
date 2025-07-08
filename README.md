@@ -19,7 +19,7 @@ terraform-azure-vm/
 ```
 
 
-[![Terraform] ![alt text](image.png)
+![alt text](image.png)
 [![Azure](https://img.shields.io/badge/Azure-0078D4?style=flat&logo=microsoft-azure&logoColor=white)](https://azure.microsoft.com/)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
