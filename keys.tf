@@ -10,10 +10,6 @@ resource "local_file" "private_key" {
   count    = var.create_new_ssh_key ? 1 : 0
   content  = tls_private_key.main[0].private_key_pem
   filename = "${var.ssh_key_name}.pem"
-  
-  provisioner "local-exec" {
-    command = local.chmod_command
-  }
 }
 
 # Save Public Key to Local File
@@ -32,4 +28,5 @@ data "local_file" "existing_ssh_public_key" {
 # Local variable to determine which SSH key to use
 locals {
   ssh_public_key = var.create_new_ssh_key ? tls_private_key.main[0].public_key_openssh : data.local_file.existing_ssh_public_key[0].content
+  ssh_private_key = var.create_new_ssh_key ? tls_private_key.main[0].private_key_pem : file(var.existing_ssh_private_key_path)
 }

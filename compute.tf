@@ -1,6 +1,7 @@
 # Virtual Machine
 resource "azurerm_linux_virtual_machine" "main" {
-  name                = var.vm_name
+  count = var.vm_count
+  name  = "${var.vm_name}-${count.index + 1}"
   resource_group_name = azurerm_resource_group.main.name
   location            = azurerm_resource_group.main.location
   size                = var.vm_size
@@ -11,8 +12,8 @@ resource "azurerm_linux_virtual_machine" "main" {
   # Disable password authentication
   disable_password_authentication = true
 
-  network_interface_ids = [
-    azurerm_network_interface.main.id,
+   network_interface_ids = [
+    azurerm_network_interface.main[count.index].id,
   ]
 
   admin_ssh_key {
@@ -27,10 +28,10 @@ resource "azurerm_linux_virtual_machine" "main" {
   }
 
   source_image_reference {
-    publisher = var.image_publisher
-    offer     = var.image_offer
-    sku       = var.image_sku
-    version   = var.image_version
+    publisher = local.selected_image.publisher
+    offer     = local.selected_image.offer
+    sku       = local.selected_image.sku
+    version   = local.selected_image.version
   }
 
   # Custom data for initial setup

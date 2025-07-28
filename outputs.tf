@@ -21,30 +21,29 @@ output "subnet_name" {
 }
 
 # VM Information
-output "vm_name" {
-  description = "Name of the virtual machine"
-  value       = azurerm_linux_virtual_machine.main.name
+output "vm_names" {
+  description = "Names of the virtual machines"
+  value       = azurerm_linux_virtual_machine.main[*].name
 }
 
-output "vm_id" {
-  description = "ID of the virtual machine"
-  value       = azurerm_linux_virtual_machine.main.id
+output "vm_ids" {
+  description = "IDs of the virtual machines"
+  value       = azurerm_linux_virtual_machine.main[*].id
 }
 
-output "vm_private_ip" {
-  description = "Private IP address of the virtual machine"
-  value       = azurerm_network_interface.main.private_ip_address
+output "vm_private_ips" {
+  description = "Private IP addresses of the virtual machines"
+  value       = azurerm_network_interface.main[*].private_ip_address
 }
 
-output "vm_public_ip" {
-  description = "Public IP address of the virtual machine"
-  value       = azurerm_public_ip.main.ip_address
+output "vm_public_ips" {
+  description = "Public IP addresses of the virtual machines"
+  value       = azurerm_public_ip.main[*].ip_address
 }
 
-# SSH Connection Info
-output "ssh_connection_command" {
-  description = "SSH command to connect to the VM"
-  value       = "ssh -i ${var.ssh_key_name}.pem ${var.admin_username}@${azurerm_public_ip.main.ip_address}"
+output "ssh_connection_commands" {
+  description = "SSH commands to connect to the VMs"
+  value       = [for i in range(var.vm_count) : "ssh -i ${var.ssh_key_name}.pem ${var.admin_username}@${azurerm_public_ip.main[i].ip_address}"]
 }
 
 output "ssh_private_key_path" {
@@ -56,4 +55,34 @@ output "ssh_private_key_path" {
 output "network_security_group_name" {
   description = "Name of the network security group"
   value       = azurerm_network_security_group.main.name
+}
+
+# Data Disk Information
+output "data_disk_names" {
+  description = "Names of the data disks"
+  value       = azurerm_managed_disk.data[*].name
+}
+
+output "data_disk_ids" {
+  description = "IDs of the data disks"
+  value       = azurerm_managed_disk.data[*].id
+}
+
+# OS Information
+output "selected_os_info" {
+  description = "Information about the selected operating system"
+  value = {
+    os_type     = var.os_type
+    description = local.selected_image.description
+    publisher   = local.selected_image.publisher
+    offer       = local.selected_image.offer
+    sku         = local.selected_image.sku
+  }
+}
+
+output "available_os_types" {
+  description = "List of available OS types"
+  value = {
+    for key, value in local.os_images : key => value.description
+  }
 }

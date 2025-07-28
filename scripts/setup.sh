@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Setup script for VM initialization
+# Basic VM Setup Script
 # This script will be executed when the VM boots up
 
 # Update package list
@@ -21,44 +21,32 @@ sudo apt-get install -y \
     gnupg \
     lsb-release
 
-# Install Docker
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
-echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-sudo apt-get update
-sudo apt-get install -y docker-ce docker-ce-cli containerd.io
-
-# Add user to docker group
-sudo usermod -aG docker ${admin_username}
-
-# Install Docker Compose
-sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-sudo chmod +x /usr/local/bin/docker-compose
-
-# Install Node.js
-curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
-sudo apt-get install -y nodejs
-
-# Install Python3 and pip
-sudo apt-get install -y python3 python3-pip
-
-# Install useful Python packages
-pip3 install --user ansible
-
 # Create a welcome message
 sudo tee /etc/motd > /dev/null <<EOF
 *****************************************************
 *  Welcome to your Terraform-provisioned Azure VM  *
 *****************************************************
-* VM Name: $(hostname)
-* OS: Ubuntu 20.04 LTS
-* Provisioned by: Terraform
-* Date: $(date)
+*  VM Name: $(hostname)                             *
+*  User: ${admin_username}                          *
+*  OS: $(lsb_release -d | cut -f2)                  *
+*  Created: $(date)                                 *
+*****************************************************
+*  Essential tools installed:                       *
+*  - curl, wget, git, vim, htop, tree              *
+*  - Basic development tools                        *
 *****************************************************
 EOF
 
-# Enable and start services
-sudo systemctl enable docker
-sudo systemctl start docker
+# Set timezone to Bangkok
+sudo timedatectl set-timezone Asia/Bangkok
 
-# Create log entry
+# Create basic directories
+mkdir -p /home/${admin_username}/{projects,scripts,logs}
+chown ${admin_username}:${admin_username} /home/${admin_username}/{projects,scripts,logs}
+
+# Enable and start SSH service
+sudo systemctl enable ssh
+sudo systemctl start ssh
+
+echo "Basic VM setup completed successfully!"
 echo "VM setup completed at $(date)" | sudo tee -a /var/log/terraform-setup.log

@@ -4,7 +4,7 @@ resource "azurerm_virtual_network" "main" {
   address_space       = var.vnet_address_space
   location            = azurerm_resource_group.main.location
   resource_group_name = azurerm_resource_group.main.name
-  tags                = var.tags
+  tags               = var.tags
 }
 
 # Subnet
@@ -17,31 +17,35 @@ resource "azurerm_subnet" "main" {
 
 # Public IP
 resource "azurerm_public_ip" "main" {
-  name                = "${var.vm_name}-pip"
-  resource_group_name = azurerm_resource_group.main.name
+  count               = var.vm_count
+  name                = "${var.vm_name}-pip-${count.index + 1}"
   location            = azurerm_resource_group.main.location
+  resource_group_name = azurerm_resource_group.main.name
   allocation_method   = "Static"
-  sku                 = "Standard"
-  tags                = var.tags
+  sku                = "Standard"
+  tags               = var.tags
 }
 
 # Network Interface
 resource "azurerm_network_interface" "main" {
-  name                = "${var.vm_name}-nic"
+  count               = var.vm_count
+  name                = "${var.vm_name}-nic-${count.index + 1}"
   location            = azurerm_resource_group.main.location
   resource_group_name = azurerm_resource_group.main.name
-  tags                = var.tags
 
   ip_configuration {
     name                          = "internal"
     subnet_id                     = azurerm_subnet.main.id
     private_ip_address_allocation = "Dynamic"
-    public_ip_address_id          = azurerm_public_ip.main.id
+    public_ip_address_id          = azurerm_public_ip.main[count.index].id
   }
+
+  tags = var.tags
 }
 
-# Associate Network Security Group to Network Interface
+# Network Security Group Association
 resource "azurerm_network_interface_security_group_association" "main" {
-  network_interface_id      = azurerm_network_interface.main.id
+  count                     = var.vm_count
+  network_interface_id      = azurerm_network_interface.main[count.index].id
   network_security_group_id = azurerm_network_security_group.main.id
 }

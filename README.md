@@ -18,7 +18,7 @@ terraform-azure-vm/
     └── setup.sh        # Setup script
 ```
 
-![alt text](image.png)
+![logo](image.png)
 
 [![Terraform](https://img.shields.io/badge/Terraform-1.0+-623CE4?style=flat&logo=terraform&logoColor=white)](https://www.terraform.io/)
 [![Azure](https://img.shields.io/badge/Azure-0078D4?style=flat&logo=microsoft-azure&logoColor=white)](https://azure.microsoft.com/)

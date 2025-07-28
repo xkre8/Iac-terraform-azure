@@ -81,26 +81,41 @@ variable "os_disk_size_gb" {
 }
 
 # Image Variables
+variable "os_type" {
+  description = "Operating System type - Available options: ubuntu20, ubuntu22, rhel9, rhel8, centos8, debian11, windows2022"
+  type        = string
+  default     = "ubuntu20"
+  
+  validation {
+    condition = contains([
+      "ubuntu20", "ubuntu22", "rhel9", "rhel8", 
+      "centos8", "debian11", "windows2022"
+    ], var.os_type)
+    error_message = "OS type must be one of: ubuntu20, ubuntu22, rhel9, rhel8, centos8, debian11, windows2022"
+  }
+}
+
+# Legacy image variables (deprecated - use os_type instead)
 variable "image_publisher" {
-  description = "Publisher of the VM image"
+  description = "[DEPRECATED] Use os_type variable instead. Publisher of the VM image"
   type        = string
   default     = "Canonical"
 }
 
 variable "image_offer" {
-  description = "Offer of the VM image"
+  description = "[DEPRECATED] Use os_type variable instead. Offer of the VM image"
   type        = string
   default     = "0001-com-ubuntu-server-focal"
 }
 
 variable "image_sku" {
-  description = "SKU of the VM image"
+  description = "[DEPRECATED] Use os_type variable instead. SKU of the VM image"
   type        = string
   default     = "20_04-lts-gen2"
 }
 
 variable "image_version" {
-  description = "Version of the VM image"
+  description = "[DEPRECATED] Use os_type variable instead. Version of the VM image"
   type        = string
   default     = "latest"
 }
@@ -114,6 +129,12 @@ variable "create_new_ssh_key" {
 
 variable "existing_ssh_public_key_path" {
   description = "Path to existing SSH public key file"
+  type        = string
+  default     = ""
+}
+
+variable "existing_ssh_private_key_path" {
+  description = "Path to existing SSH private key file"
   type        = string
   default     = ""
 }
@@ -146,4 +167,29 @@ variable "tags" {
     Project     = "Terraform-VM"
     Owner       = "DevOps-Team"
   }
+}
+# VM Count Variable
+variable "vm_count" {
+  description = "Number of VMs to create"
+  type        = number
+  default     = 1
+}
+
+# Data Disk Variables
+variable "data_disk_size_gb" {
+  description = "Size of the data disk in GB"
+  type        = number
+  default     = 10
+}
+
+variable "data_disk_storage_account_type" {
+  description = "Storage account type for data disk"
+  type        = string
+  default     = "Premium_LRS"
+}
+
+variable "data_disk_caching" {
+  description = "Caching type for data disk"
+  type        = string
+  default     = "ReadWrite"
 }
