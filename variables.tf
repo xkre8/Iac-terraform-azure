@@ -176,20 +176,39 @@ variable "vm_count" {
 }
 
 # Data Disk Variables
+variable "data_disk_configs" {
+  description = "Configuration for multiple data disks"
+  type = list(object({
+    name                 = string
+    size_gb             = number
+    storage_account_type = string
+    caching             = string
+  }))
+  default = [
+    {
+      name                 = "data-disk-1"
+      size_gb             = 10
+      storage_account_type = "Premium_LRS"
+      caching             = "ReadWrite"
+    }
+  ]
+}
+
+# Legacy Data Disk Variables (for backward compatibility)
 variable "data_disk_size_gb" {
-  description = "Size of the data disk in GB"
+  description = "[DEPRECATED] Use data_disk_configs instead. Size of the data disk in GB"
   type        = number
   default     = 10
 }
 
 variable "data_disk_storage_account_type" {
-  description = "Storage account type for data disk"
+  description = "[DEPRECATED] Use data_disk_configs instead. Storage account type for data disk"
   type        = string
   default     = "Premium_LRS"
 }
 
 variable "data_disk_caching" {
-  description = "Caching type for data disk"
+  description = "[DEPRECATED] Use data_disk_configs instead. Caching type for data disk"
   type        = string
   default     = "ReadWrite"
 }

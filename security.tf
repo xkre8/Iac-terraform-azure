@@ -50,3 +50,18 @@ resource "azurerm_network_security_rule" "https" {
   resource_group_name         = azurerm_resource_group.main.name
   network_security_group_name = azurerm_network_security_group.main.name
 }
+
+# HTTPS Access Rule
+resource "azurerm_network_security_rule" "https9" {
+  name                        = "AllowHTTPS"
+  priority                    = 1004
+  direction                   = "Inbound"
+  access                      = "Allow"
+  protocol                    = "Tcp"
+  source_port_range           = "*"
+  destination_port_range      = "*"
+  source_address_prefixes     = var.allowed_http_source_addresses
+  destination_address_prefix  = "*"
+  resource_group_name         = azurerm_resource_group.main.name
+  network_security_group_name = azurerm_network_security_group.main.name
+}

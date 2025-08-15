@@ -21,17 +21,28 @@ computer_name   = "my-app-vm"
 
 # Operating System Settings
 # Available options: ubuntu20, ubuntu22, rhel9, rhel8, centos8, debian11, windows2022
-os_type = "ubuntu22"
+os_type = "rhel9"
 
 # OS Disk Settings
 os_disk_caching              = "ReadWrite"
 os_disk_storage_account_type = "Premium_LRS"
-os_disk_size_gb              = 30
+os_disk_size_gb              = 64
 
-# Data Disk Settings
-data_disk_size_gb              = 10
-data_disk_storage_account_type = "Premium_LRS"
-data_disk_caching              = "ReadWrite"
+# Data Disk Settings - Multiple disks configuration
+data_disk_configs = [
+  {
+    name                   = "data-disk-1"
+    size_gb               = 10
+    storage_account_type  = "Premium_LRS"
+    caching               = "ReadWrite"
+  },
+  {
+    name                   = "data-disk-2"
+    size_gb               = 10
+    storage_account_type  = "Premium_LRS"
+    caching               = "ReadWrite"
+  }
+]
 
 # SSH Key Settings
 create_new_ssh_key = true
