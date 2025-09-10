@@ -41,6 +41,12 @@ data_disk_configs = [
     size_gb               = 10
     storage_account_type  = "Premium_LRS"
     caching               = "ReadWrite"
+  },
+    {
+    name                   = "data-disk-3"
+    size_gb               = 10
+    storage_account_type  = "Premium_LRS"
+    caching               = "ReadWrite"
   }
 ]
 
